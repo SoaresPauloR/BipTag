@@ -1,0 +1,77 @@
+# -------------------------------------------------------------------
+# Flutter/Dart
+# -------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+/coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# -------------------------------------------------------------------
+# Android
+# -------------------------------------------------------------------
+/android/app/debug
+/android/app/profile
+/android/app/release
+*.jks
+*.keystore
+key.properties
+local.properties
+
+# -------------------------------------------------------------------
+# iOS/macOS
+# -------------------------------------------------------------------
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/*sync/
+**/DerivedData/
+**/Pods/
+**/.symlinks/
+xcuserdata/
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/ServiceDefinitions.json
+/macos/Flutter/ephemeral/
+
+# -------------------------------------------------------------------
+# Windows/Linux
+# -------------------------------------------------------------------
+/windows/flutter/ephemeral/
+/linux/flutter/ephemeral/
+executable.res
+*.exe
+*.dll
+*.so
+
+# -------------------------------------------------------------------
+# Web
+# -------------------------------------------------------------------
+lib/generated_plugin_registrant.dart
+
+# -------------------------------------------------------------------
+# IDEs e Ferramentas
+# -------------------------------------------------------------------
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.history
+.DS_Store
+*.log
+
+# -------------------------------------------------------------------
+# Segredos e Configurações Locais
+# -------------------------------------------------------------------
+.env*
+debian/

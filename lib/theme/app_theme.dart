@@ -6,7 +6,6 @@ class AppTheme {
   static const Color _surfaceWhite = Colors.white;
   static const Color _borderColor = Color(0xFFD9D9D9);
   static const Color _secondaryColor = Color(0xFF8C8C8C);
-  static const Color _lightGrayColor = Color(0xFFD9D9D9);
 
   // Tema Claro
   static ThemeData get lightTheme {
@@ -92,7 +91,7 @@ class AppTheme {
   );
 
   static final _cardThemeData = CardThemeData(
-    color: _lightGrayColor,
+    color: _surfaceWhite,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
   );
 }

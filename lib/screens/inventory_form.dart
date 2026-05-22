@@ -35,6 +35,7 @@ class FormInventory extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Card(
+                    color: Colors.grey[300],
                     child: Padding(
                       padding: const EdgeInsets.all(64.0),
                       child: Column(

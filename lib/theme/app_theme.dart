@@ -5,6 +5,8 @@ class AppTheme {
   static const Color _primaryColor = Colors.black;
   static const Color _surfaceWhite = Colors.white;
   static const Color _borderColor = Color(0xFFD9D9D9);
+  static const Color _secondaryColor = Color(0xFF8C8C8C);
+  static const Color _lightGrayColor = Color(0xFFD9D9D9);
 
   // Tema Claro
   static ThemeData get lightTheme {
@@ -18,17 +20,25 @@ class AppTheme {
         surface: _surfaceWhite,
         brightness: Brightness.light,
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: _surfaceWhite,
+      ),
 
       // Organização dos temas de componentes
       elevatedButtonTheme: _elevatedButtonTheme,
       inputDecorationTheme: _inputDecorationTheme,
       floatingActionButtonTheme: _fabTheme,
+      cardTheme: _cardThemeData,
 
       // Estilos de texto globais
       textTheme: const TextTheme(
         headlineMedium: TextStyle(
           fontWeight: FontWeight.bold,
           color: _primaryColor,
+        ),
+        bodyMedium: TextStyle(
+          color: _secondaryColor,
+          fontSize: 16.0,
         ),
       ),
     );
@@ -64,6 +74,13 @@ class AppTheme {
       borderSide: const BorderSide(color: _primaryColor, width: 2),
     ),
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    prefixIconColor: WidgetStateColor.resolveWith((states) {
+      if (states.contains(WidgetState.focused)) {
+        return _primaryColor;
+      }
+      return _secondaryColor;
+    }),
+    suffixIconColor: _secondaryColor,
   );
 
   static final _fabTheme = FloatingActionButtonThemeData(
@@ -72,5 +89,10 @@ class AppTheme {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(32),
     ),
+  );
+
+  static final _cardThemeData = CardThemeData(
+    color: _lightGrayColor,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
   );
 }

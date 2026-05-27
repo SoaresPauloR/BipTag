@@ -1,22 +1,45 @@
 import 'package:biptag/models/item.dart';
 import 'package:flutter/material.dart';
+import 'package:biptag/screens/perfil.dart';
 
-class Inventory extends StatelessWidget {
+class Inventory extends StatefulWidget {
   const Inventory({super.key});
+
+  @override
+  State<Inventory> createState() => _InventoryState();
+}
+
+class _InventoryState extends State<Inventory> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const InventoryList(),
+    const Perfil(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inventory'),
+        title: Text(_selectedIndex == 0 ? 'Inventory' : 'Perfil'),
         automaticallyImplyLeading: false,
       ),
-      body: InventoryList(),
-      floatingActionButton: FloatingActionButton(
+      body: _pages[_selectedIndex],
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/inventory/create');
         },
         child: const Icon(Icons.add),
+      )
+          : null,
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _selectedIndex,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
     );
   }
@@ -174,6 +197,51 @@ class StatusCard extends StatelessWidget {
             color: _textColor,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class BottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onItemTapped;
+
+  const BottomNavBar({
+    super.key,
+    required this.currentIndex,
+    required this.onItemTapped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey.shade300,
+            width: 1.0
+          ),
+        ),
+      ),
+      child: BottomNavigationBar(
+        elevation: 0,
+        currentIndex: currentIndex,
+        onTap: onItemTapped,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2_outlined),
+            activeIcon: Icon(Icons.inventory_2),
+            label: 'Inventário',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
+        ],
       ),
     );
   }

@@ -12,22 +12,10 @@ class _PerfilState extends State<Perfil> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        scrolledUnderElevation: 0,
-        automaticallyImplyLeading: false, // Remove a seta de voltar, já que é uma tela principal
-        title: const Text(
-          'Perfil',
-          style: TextStyle(
-            color: Color(0xFF212121),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
@@ -116,7 +104,10 @@ class _PerfilState extends State<Perfil> {
                       children: [
                         Text(
                           'Notificações',
-                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -148,7 +139,6 @@ class _PerfilState extends State<Perfil> {
               // Card: Créditos do app
               InkWell(
                 onTap: () {
-                  // Redireciona para a tela de Créditos (ainda não criada)
                   Navigator.pushNamed(context, '/creditos');
                 },
                 borderRadius: BorderRadius.circular(12),
@@ -172,64 +162,30 @@ class _PerfilState extends State<Perfil> {
                 ),
               ),
 
-              const Spacer(), // Empurra o botão Sair lá para baixo
+              const SizedBox(height: 40),
 
               // Botão Sair
               TextButton(
                 onPressed: () {
-                  // Volta para a tela de Inventário
-                  Navigator.pushReplacementNamed(context, '/inventory');
+                  Navigator.pushReplacementNamed(context, '/');
                 },
                 child: Text(
-                  'Sair',
+                  'Sair da Conta',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Colors.red[400],
                     fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
             ],
           ),
-        ),
-      ),
-
-      // Barra de Navegação Inferior
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey[300]!, width: 1),
-          ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          currentIndex: 1, // Fixado em 1 pois estamos na aba Perfil
-          selectedItemColor: const Color(0xFF212121),
-          unselectedItemColor: Colors.grey[500],
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-          onTap: (index) {
-            if (index == 0) {
-              // Se clicar no botão Inventário (index 0), navega para lá
-              Navigator.pushReplacementNamed(context, '/inventory');
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.inventory_2_outlined),
-              label: 'Inventário',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: 'Perfil',
-            ),
-          ],
         ),
       ),
     );
   }
 
-  // Widget auxiliar para criar os blocos brancos com borda cinza
   Widget _buildInfoCard({required Widget child}) {
     return Container(
       width: double.infinity,

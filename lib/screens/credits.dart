@@ -120,15 +120,7 @@ class Credits extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Android Nativo · Jetpack Compose · NFC',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                        height: 1.5,
-                      ),
-                    ),
-                    Text(
-                      'Spring Boot · PostgreSQL · Firebase',
+                      'Flutter · Dart · Supabase',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],

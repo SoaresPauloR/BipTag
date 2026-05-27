@@ -160,7 +160,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(context); // Volta para a tela de Login
+                        Navigator.pushNamed(context, '/login');
                       },
                       child: const Text(
                         'Já tem conta? Entrar',

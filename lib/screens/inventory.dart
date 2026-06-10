@@ -1,6 +1,10 @@
 import 'package:biptag/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:biptag/screens/perfil.dart';
+import 'package:biptag/screens/map_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/inventory_provider.dart';
 
 class Inventory extends StatefulWidget {
   const Inventory({super.key});
@@ -14,6 +18,7 @@ class _InventoryState extends State<Inventory> {
 
   final List<Widget> _pages = [
     const InventoryList(),
+    const MapScreen(),
     const Perfil(),
   ];
 
@@ -21,17 +26,23 @@ class _InventoryState extends State<Inventory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? 'Inventory' : 'Perfil'),
+        title: Text(
+          _selectedIndex == 0
+              ? 'Inventory'
+              : _selectedIndex == 1
+              ? 'Mapa de Ativos'
+              : 'Perfil',
+        ),
         automaticallyImplyLeading: false,
       ),
       body: _pages[_selectedIndex],
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/inventory/create');
-        },
-        child: const Icon(Icons.add),
-      )
+              onPressed: () {
+                Navigator.pushNamed(context, '/inventory/create');
+              },
+              child: const Icon(Icons.add),
+            )
           : null,
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
@@ -55,65 +66,51 @@ class InventoryList extends StatefulWidget {
 }
 
 class InventoryListState extends State<InventoryList> {
-  final List<Item> inventory = [
-    Item(
-      id: 1,
-      userId: 101,
-      name: 'MacBook Pro M2',
-      description: 'Notebook de uso pessoal/trabalho',
-      category: 'Eletrônicos',
-      status: 'Verified',
-      // fiscalNote e image ficam como null por padrão, igual ao Kotlin
-    ),
-    Item(
-      id: 2,
-      userId: 101,
-      name: 'Cadeira Herman Miller',
-      description: 'Cadeira ergonômica do escritório',
-      category: 'Móveis',
-      status: 'Created',
-    ),
-    Item(
-      id: 3,
-      userId: 102,
-      name: 'Monitor Dell 27"',
-      description: 'Monitor secundário 4K',
-      category: 'Eletrônicos',
-      status: 'Stolen',
-    ),
-    Item(
-      id: 4,
-      userId: 105,
-      name: 'Mochila North Face',
-      description: 'Mochila de viagem preta',
-      category: 'Acessórios',
-      status: 'Created',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
+    // Escuta o Provider para manter a lista atualizada
+    final inventoryState = context.watch<InventoryProvider>();
+    final items = inventoryState.inventory;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+
+          // Barra de Pesquisa
+          TextField(
             decoration: InputDecoration(
               hintText: 'Buscar item...',
-              prefixIcon: Icon(Icons.search),
+              prefixIcon: const Icon(Icons.search),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0), // Centraliza o texto
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12), // Borda arredondada
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: inventory.length,
-            itemBuilder: (context, index) {
-              final item = inventory[index];
-              return ItemCard(item);
-            },
+          const SizedBox(height: 16),
+          // Lista de Itens
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 0, bottom: 80),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: ItemCard(item),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -217,10 +214,7 @@ class BottomNavBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1.0
-          ),
+          top: BorderSide(color: Colors.grey.shade300, width: 1.0),
         ),
       ),
       child: BottomNavigationBar(
@@ -235,6 +229,11 @@ class BottomNavBar extends StatelessWidget {
             icon: Icon(Icons.inventory_2_outlined),
             activeIcon: Icon(Icons.inventory_2),
             label: 'Inventário',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map_outlined),
+            activeIcon: Icon(Icons.map),
+            label: 'Mapa',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),

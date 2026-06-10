@@ -103,10 +103,11 @@ class _UserRegistrationState extends State<UserRegistration> {
                       children: [
                         Text(
                           'Receber notificações',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[800],
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Colors.grey[800],
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                         Switch(
                           value: _receiveNotifications,
@@ -131,7 +132,10 @@ class _UserRegistrationState extends State<UserRegistration> {
 
             // Rodapé fixo com Botões
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 16.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -217,10 +221,15 @@ class InputFormRegistration extends StatelessWidget {
           obscureText: obscureText,
           controller: controller,
           decoration: InputDecoration(
-            prefixIcon: icon != null ? Icon(icon, color: Colors.grey[500]) : null,
+            prefixIcon: icon != null
+                ? Icon(icon, color: Colors.grey[500])
+                : null,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.grey[400]),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!),
@@ -231,7 +240,10 @@ class InputFormRegistration extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF212121), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF212121),
+                width: 1.5,
+              ),
             ),
           ),
         ),

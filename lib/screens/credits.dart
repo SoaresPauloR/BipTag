@@ -37,7 +37,10 @@ class Credits extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 32.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -87,7 +90,7 @@ class Credits extends StatelessWidget {
 
                     const SizedBox(height: 48),
 
-                    // Seção EQUIPE
+                    // Conteúdo da Equipe
                     Text(
                       'EQUIPE',
                       style: TextStyle(
@@ -110,7 +113,7 @@ class Credits extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
-                    // Seção TECNOLOGIAS
+                    // Conteúdo Tecnologias
                     Text(
                       'TECNOLOGIAS',
                       style: TextStyle(
@@ -132,10 +135,15 @@ class Credits extends StatelessWidget {
               ),
             ),
 
-            // Rodapé da FIAP fixado no fundo
+            // Rodapé da FIAP
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0, top: 16.0),
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                bottom: 24.0,
+                top: 16.0,
+              ),
               color: const Color(0xFFF9F9F9),
               child: Text(
                 'FIAP — Sistemas de Informação 2026',

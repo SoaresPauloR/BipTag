@@ -61,10 +61,11 @@ class _LoginState extends State<Login> {
                             const SizedBox(height: 12),
                             Text(
                               'BipTag',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF222222),
-                              ),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF222222),
+                                  ),
                             ),
                           ],
                         ),
@@ -75,10 +76,11 @@ class _LoginState extends State<Login> {
                       // Título "Entrar"
                       Text(
                         'Entrar',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF222222),
-                        ),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF222222),
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -90,7 +92,7 @@ class _LoginState extends State<Login> {
 
                       const SizedBox(height: 32),
 
-                      // Campo de Email usando o componente customizado adaptado
+                      // Campo de Email
                       InputFormLocal(
                         label: "Email",
                         hintText: "seu@email.com",
@@ -171,7 +173,7 @@ class _LoginState extends State<Login> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Navegação para a tela de registro adicionada aqui
+                            // Navegação para a tela de registro
                             Navigator.pushNamed(context, '/register');
                           },
                           child: const Text(
@@ -233,10 +235,15 @@ class InputFormLocal extends StatelessWidget {
           obscureText: obscureText,
           controller: controller,
           decoration: InputDecoration(
-            prefixIcon: icon != null ? Icon(icon, color: Colors.grey[500]) : null,
+            prefixIcon: icon != null
+                ? Icon(icon, color: Colors.grey[500])
+                : null,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.grey[400]),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!),

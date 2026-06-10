@@ -83,7 +83,8 @@ class InventoryListState extends State<InventoryList> {
             decoration: InputDecoration(
               hintText: 'Buscar item...',
               prefixIcon: const Icon(Icons.search),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0), // Centraliza o texto
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              // Centraliza o texto
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12), // Borda arredondada
                 borderSide: BorderSide(color: Colors.grey.shade300),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/item.dart';
 import '../providers/inventory_provider.dart';
+import '../services/orc_service.dart';
 
 class InventoryForm extends StatelessWidget {
   const InventoryForm({super.key});
@@ -38,6 +39,9 @@ class _FormInventoryState extends State<FormInventory> {
   final _descController = TextEditingController();
   final _categoryController = TextEditingController();
 
+  // Mostra um ícone de carregamento enquanto a "IA" pensa
+  bool _isProcessingImage = false;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -57,27 +61,59 @@ class _FormInventoryState extends State<FormInventory> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Card(
-                    color: Colors.grey[200],
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(48.0),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.camera_alt_outlined,
-                            color: Colors.grey[500],
-                            size: 32,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Adicionar foto do item",
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
+                  InkWell(
+                    onTap: _isProcessingImage
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isProcessingImage = true;
+                            });
+                            // Chama a API
+                            final extractedData =
+                                await OcrService.scanReceipt();
+                            // Se a API retornou os dados, preenche os controladores
+                            if (extractedData != null) {
+                              _nameController.text =
+                                  extractedData['name'] ?? '';
+                              _descController.text =
+                                  extractedData['description'] ?? '';
+                              _categoryController.text =
+                                  extractedData['category'] ?? '';
+                            }
+                            setState(() {
+                              _isProcessingImage = false;
+                            });
+                          },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Card(
+                      color: Colors.grey[200],
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(48.0),
+                        child: Column(
+                          children: [
+                            // Se estiver carregando, mostra a rodinha. Se não, mostra a câmera.
+                            _isProcessingImage
+                                ? const CircularProgressIndicator(
+                                    color: Colors.black,
+                                  )
+                                : Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Colors.grey[500],
+                                    size: 32,
+                                  ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _isProcessingImage
+                                  ? "Lendo Nota Fiscal com IA..."
+                                  : "Escanear Nota Fiscal",
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -116,9 +152,13 @@ class _FormInventoryState extends State<FormInventory> {
                 final newItem = Item(
                   id: DateTime.now().millisecondsSinceEpoch,
                   userId: 101,
-                  name: _nameController.text.isEmpty ? 'Item sem nome' : _nameController.text,
+                  name: _nameController.text.isEmpty
+                      ? 'Item sem nome'
+                      : _nameController.text,
                   description: _descController.text,
-                  category: _categoryController.text.isEmpty ? 'Geral' : _categoryController.text,
+                  category: _categoryController.text.isEmpty
+                      ? 'Geral'
+                      : _categoryController.text,
                   status: 'Created',
                 );
                 // Lê o Provider e adiciona o Item no Inventário
@@ -182,11 +222,15 @@ class InputForm extends StatelessWidget {
           maxLines: maxLines,
           controller: controller,
           decoration: InputDecoration(
-            prefixIcon: icon != null ? Icon(icon, color: Colors.grey[500]) : null,
+            prefixIcon: icon != null
+                ? Icon(icon, color: Colors.grey[500])
+                : null,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.grey[400]),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            // Bordas dos inputs suavizadas para bater com o design system do seu app
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: Colors.grey[300]!),
@@ -197,7 +241,10 @@ class InputForm extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF212121), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF212121),
+                width: 1.5,
+              ),
             ),
           ),
         ),

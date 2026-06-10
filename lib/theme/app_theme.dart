@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Cores constantes para manter a identidade visual
+  // Cores para manter a identidade visual
   static const Color _primaryColor = Colors.black;
   static const Color _surfaceWhite = Colors.white;
   static const Color _borderColor = Color(0xFFD9D9D9);

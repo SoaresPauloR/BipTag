@@ -34,12 +34,13 @@ class FormInventory extends StatefulWidget {
 }
 
 class _FormInventoryState extends State<FormInventory> {
-  // Controladores para pegar o que o usuário digitar
+  // Variável que dispara a validação do formulário
+  final _formKey = GlobalKey<FormState>();
+
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
   final _categoryController = TextEditingController();
 
-  // Mostra um ícone de carregamento enquanto a "IA" pensa
   bool _isProcessingImage = false;
 
   @override
@@ -53,6 +54,7 @@ class _FormInventoryState extends State<FormInventory> {
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -68,10 +70,10 @@ class _FormInventoryState extends State<FormInventory> {
                             setState(() {
                               _isProcessingImage = true;
                             });
-                            // Chama a API
+
                             final extractedData =
                                 await OcrService.scanReceipt();
-                            // Se a API retornou os dados, preenche os controladores
+
                             if (extractedData != null) {
                               _nameController.text =
                                   extractedData['name'] ?? '';
@@ -95,7 +97,6 @@ class _FormInventoryState extends State<FormInventory> {
                         padding: const EdgeInsets.all(48.0),
                         child: Column(
                           children: [
-                            // Se estiver carregando, mostra a rodinha. Se não, mostra a câmera.
                             _isProcessingImage
                                 ? const CircularProgressIndicator(
                                     color: Colors.black,
@@ -118,12 +119,19 @@ class _FormInventoryState extends State<FormInventory> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // Passa os controladores para os campos
+
+                  // Adicionei o validator em cada campo
                   InputForm(
                     label: "Nome do Item",
                     hintText: "Digite o nome do item.",
                     controller: _nameController,
                     icon: Icons.inventory_2_outlined,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'O nome do item é obrigatório';
+                      }
+                      return null;
+                    },
                   ),
 
                   InputForm(
@@ -131,6 +139,12 @@ class _FormInventoryState extends State<FormInventory> {
                     hintText: "Digite a descrição do item.",
                     controller: _descController,
                     maxLines: 3,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'A descrição não pode ficar vazia';
+                      }
+                      return null;
+                    },
                   ),
 
                   InputForm(
@@ -138,6 +152,12 @@ class _FormInventoryState extends State<FormInventory> {
                     hintText: "Digite uma categoria do item.",
                     controller: _categoryController,
                     icon: Icons.category_outlined,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Informe uma categoria válida';
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -148,23 +168,20 @@ class _FormInventoryState extends State<FormInventory> {
             padding: const EdgeInsets.only(bottom: 24.0, top: 16.0),
             child: ElevatedButton(
               onPressed: () {
-                // Cria um objeto Item com o que foi digitado
-                final newItem = Item(
-                  id: DateTime.now().millisecondsSinceEpoch,
-                  userId: 101,
-                  name: _nameController.text.isEmpty
-                      ? 'Item sem nome'
-                      : _nameController.text,
-                  description: _descController.text,
-                  category: _categoryController.text.isEmpty
-                      ? 'Geral'
-                      : _categoryController.text,
-                  status: 'Created',
-                );
-                // Lê o Provider e adiciona o Item no Inventário
-                context.read<InventoryProvider>().addItem(newItem);
-                // Fecha o formulário e volta para o Inventário
-                Navigator.pop(context);
+                // Só irá salvar se todos os campos estiverem preenchidos
+                if (_formKey.currentState!.validate()) {
+                  final newItem = Item(
+                    id: DateTime.now().millisecondsSinceEpoch,
+                    userId: 101,
+                    name: _nameController.text,
+                    description: _descController.text,
+                    category: _categoryController.text,
+                    status: 'Created',
+                  );
+
+                  context.read<InventoryProvider>().addItem(newItem);
+                  Navigator.pop(context);
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF282828),
@@ -194,12 +211,16 @@ class InputForm extends StatelessWidget {
   final int? maxLines;
   final IconData? icon;
 
+  // Funçao de validaçao no componente
+  final String? Function(String?)? validator;
+
   const InputForm({
     required this.hintText,
     required this.label,
     this.controller,
     this.maxLines = 1,
     this.icon,
+    this.validator,
     super.key,
   });
 
@@ -221,6 +242,8 @@ class InputForm extends StatelessWidget {
         TextFormField(
           maxLines: maxLines,
           controller: controller,
+          validator: validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             prefixIcon: icon != null
                 ? Icon(icon, color: Colors.grey[500])
@@ -230,6 +253,15 @@ class InputForm extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
               vertical: 16,
               horizontal: 12,
+            ),
+            // Adicionei a borda de erro para ficar vermelho quando vazio
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.red),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.red, width: 1.5),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

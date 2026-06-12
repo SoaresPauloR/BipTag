@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import '../services/rfid_service.dart';
+import '../providers/inventory_provider.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -113,17 +115,69 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Escutando a lista de itens do Provider em tempo real
+    final inventoryItems = context.watch<InventoryProvider>().inventory;
+
     // Scaffold sem AppBar para uso do FloatingActionButton
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
           initialCenter: _initialPosition,
-          initialZoom: 16.0,
+          initialZoom: 15.0,
         ),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.seunome.biptag',
+          ),
+          // Marcadores (Pinos no Mapa)
+          MarkerLayer(
+            markers: inventoryItems.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              final isStolen =
+                  item.status == 'Stolen' || item.status == 'Roubado';
+
+              // Calcula uma posição falsa para cada item não ficar sobreposto
+              final lat = _initialPosition.latitude + (index * 0.002);
+              final lng = _initialPosition.longitude + (index * 0.001);
+
+              return Marker(
+                point: LatLng(lat, lng),
+                width: 80,
+                height: 80,
+                child: Column(
+                  children: [
+                    // Etiqueta flutuante com o nome do item
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    // O ícone do pino (Alerta vermelho se roubado, Preto padrão se OK)
+                    Icon(
+                      isStolen ? Icons.warning_rounded : Icons.location_on,
+                      color: isStolen ? Colors.red : const Color(0xFF282828),
+                      size: 36,
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -144,12 +198,11 @@ class _MapScreenState extends State<MapScreen> {
               )
             : const Icon(Icons.radar),
         label: Text(
-          _isScanning ? 'Escaneando...' : 'Escanear Área',
+          _isScanning ? 'Escaneando...' : 'Escanear Objeto',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation
-          .centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

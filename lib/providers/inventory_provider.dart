@@ -46,4 +46,10 @@ class InventoryProvider extends ChangeNotifier {
     _inventory.add(item);
     notifyListeners();
   }
+
+  // Remove o item da lista e avisa a tela para se atualizar
+  void removeItem(Item item) {
+    _inventory.remove(item);
+    notifyListeners();
+  }
 }

@@ -103,9 +103,43 @@ class InventoryListState extends State<InventoryList> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ItemCard(item),
+                  // Faz a açao de arrastar
+                  child: Dismissible(
+                    // Pega o ID do item que será arrastado
+                    key: Key(item.id.toString()),
+                    // Excluir da direita para a esquerda
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 24.0),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade400,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    // Após o card ser excluido
+                    onDismissed: (direction) {
+                      context.read<InventoryProvider>().removeItem(item);
+
+                      // Avisa que o tem foi removido
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${item.name} foi removido.'),
+                          duration: const Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    child: ItemCard(item),
+                  ),
                 );
               },
             ),
@@ -123,16 +157,36 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Verifica se o item foi roubado
+    final isStolen = item.status == 'Stolen' || item.status == 'Roubado';
+
     return Card(
+      // Se for roubado, a sombra fica um pouco mais forte
+      elevation: isStolen ? 4 : 1,
+      // Fica vermelha se for roubado, transparente se for normal
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isStolen
+            ? const BorderSide(color: Colors.red, width: 2)
+            : const BorderSide(color: Colors.transparent, width: 0),
+      ),
+      // Fundo vermelho para dizer que é um alerta
+      color: isStolen ? Colors.red.shade50 : Colors.white,
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Row(
           children: [
             Card(
+              elevation: 0,
+              // O quadrado do ícone também acompanha a cor
+              color: isStolen ? Colors.red.shade100 : Colors.grey[200],
               child: SizedBox(
                 width: 48,
                 height: 48,
-                child: Icon(Icons.no_photography_outlined),
+                child: Icon(
+                  Icons.no_photography_outlined,
+                  color: isStolen ? Colors.red : Colors.grey[600],
+                ),
               ),
             ),
             const SizedBox(width: 8),
@@ -145,9 +199,20 @@ class ItemCard extends StatelessWidget {
                     children: [
                       Text(
                         item.name,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          // O título fica em negrito e vermelho se estiver roubado
+                          color: isStolen ? Colors.red[900] : Colors.black,
+                          fontWeight: isStolen
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
                       ),
-                      Text(item.category),
+                      Text(
+                        item.category,
+                        style: TextStyle(
+                          color: isStolen ? Colors.red[700] : Colors.grey[700],
+                        ),
+                      ),
                     ],
                   ),
                   StatusCard(status: item.status),
